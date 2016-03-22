@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Whisper file size calculator</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  <style>
+  /* Space out content a bit */
+  body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  /* Everything but the jumbotron gets side spacing for mobile first views */
+  .header,
+  .marketing,
+  .footer {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  /* Custom page header */
+  .header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  /* Make the masthead heading the same height as the navigation */
+  .header h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
+  }
+
+  /* Custom page footer */
+  .footer {
+    padding-top: 19px;
+    color: #777;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  /* Customize container */
+  @media (min-width: 768px) {
+    .container {
+      max-width: 730px;
+    }
+  }
+  .container-narrow > hr {
+    margin: 30px 0;
+  }
+
+  /* Main marketing message and sign up button */
+  .jumbotron {
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .jumbotron .btn {
+    padding: 14px 24px;
+    font-size: 21px;
+  }
+
+  /* Supporting marketing content */
+  .marketing {
+    margin: 40px 0;
+  }
+  .marketing p + h4 {
+    margin-top: 28px;
+  }
+
+  /* Responsive: Portrait tablets and up */
+  @media screen and (min-width: 768px) {
+    /* Remove the padding we set earlier */
+    .header,
+    .marketing,
+    .footer {
+      padding-right: 0;
+      padding-left: 0;
+    }
+    /* Space out the masthead */
+    .header {
+      margin-bottom: 30px;
+    }
+    /* Remove the bottom border on the jumbotron for visual effect */
+    .jumbotron {
+      border-bottom: 0;
+    }
+  }
+
+  #archive{
+    width:200px;
+  }
+  pre{
+    margin-top: 10px;
+    text-align: left;
+  }
+  </style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    function calc(archive){
+      function to_seconds(s){
+        SECONDS_IN_A = {
+          's': 1,
+          'm': 1 * 60,
+          'h': 1 * 60 * 60,
+          'd': 1 * 60 * 60 * 24,
+          'y': 1 * 60 * 60 * 24 * 365
+        }
+        return parseInt(s.substr(0,s.length-1)) * SECONDS_IN_A[s[s.length-1]];
+      }
+      SIZE_METADATA = 2 * 4 + 4 + 4
+      SIZE_ARCHIVE_INFO = 3 * 4
+      SIZE_POINT = 4 + 8
+      size = 0
+      archive.split(',').map(function(item){
+        result = item.split(':').map(to_seconds);
+        retention = result[1]
+        resolution = result[0]
+        size += SIZE_ARCHIVE_INFO + SIZE_POINT * retention/resolution
+      });
+      if(size)
+        size += SIZE_METADATA
+      return size
+    }
+    function calculate()
+    {
+      var archive = document.getElementById('archive').value;
+      var bytes_per_metric = calc(archive);
+      if(isNaN(bytes_per_metric))
+      {
+        document.getElementById('result').innerHTML = "Wrong archive format!";
+        return false;
+      }
+      var number_of_metrics = parseInt(document.getElementById('count').value);
+      var units = ['bytes', 'Kilobytes', 'Megabytes', 'Gigabytes', 'Terabytes']
+      var size = bytes_per_metric*number_of_metrics;
+      unit = 0;
+      while(unit<4 && size>1024)
+      {
+        unit+=1;
+        size/=1024;
+      }
+      document.getElementById('result').innerHTML = "Total size is " + size.toFixed(2) + " " + units[unit];
+    }
+  </script>
+  <div class="container">
+    <div class="header clearfix">
+      <h3 class="text-muted">Whisper file size calculator</h3>
+    </div>
+
+    <div class="jumbotron">
+      <h2>Insert your archive format in resolution:retention format</h2>
+      <form class="form-inline">
+        <div class="form-group">
+          <label for="archive">Format</label>
+          <input type="text" class="form-control" id="archive" placeholder="15s:7d,1m:21d,15m:5y" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label for="count">Metric count</label>
+          <input type="number" class="form-control" id="count" value="1" min="1" step="1" oninput="calculate()">
+        </div>
+      </form>
+      <pre>
+Help:
+s: seconds
+m: minutes
+h: hours
+d: days
+y: years</pre>
+    </br>
+      <p id="result"></p>
+    </div>
+
+    <footer class="footer">
+      <p>By alex-mercer, a simple UI for the <a href="https://gist.github.com/jjmaestro/5774063" target="_blank"> python code</a></p>
+    </footer>
+
+  </div> <!-- /container -->
+
+
+</body>
+</html>
