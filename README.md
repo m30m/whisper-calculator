@@ -1,1 +1,1 @@
-# [Whisper file size calculator for your browser!] (http://alex-mercer.github.io/whisper-calculator/)
+# [Whisper file size calculator for your browser!] (http://m30m.github.io/whisper-calculator/)
