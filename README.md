@@ -1,6 +1,7 @@
 # WhisperCalc
 
-[Whisper file size calculator for your browser, now actually matching whisper's parser!](http://Zen-Slug.github.io/whisper-calculator/)
+Whisper file size calculator for your browser.
+[Now matching whisper's parser!](http://Zen-Slug.github.io/whisper-calculator/)
 
 
 
