@@ -113,15 +113,26 @@
 <body>
   <script type="text/javascript">
     function calc(archive){
-      function to_seconds(s){
-        SECONDS_IN_A = {
-          's': 1,
-          'm': 1 * 60,
-          'h': 1 * 60 * 60,
-          'd': 1 * 60 * 60 * 24,
-          'y': 1 * 60 * 60 * 24 * 365
+      function getUnitString(s){
+        timeVals = ['seconds', 'minutes', 'hours', 'days', 'weeks', 'years'];
+        for (value in timeVals) {
+          if (value.startsWith(s)) {
+            return value;
+          }
+        throw s " does not match one of " + timeVals ;
         }
-        return parseInt(s.substr(0,s.length-1)) * SECONDS_IN_A[s[s.length-1]];
+      }
+      function to_seconds(s){
+        unitMultipliers = {
+          'seconds': 1,
+          'minutes': 60,
+          'hours': 3600,
+          'days': 86400,
+          'weeks': 86400 * 7,
+          'years': 86400 * 365
+        }
+        unit = getUnitString(s[s.length-1]);
+        return parseInt(s.substr(0,s.length-1)) * unitMultipliers[unit];
       }
       SIZE_METADATA = 2 * 4 + 4 + 4
       SIZE_ARCHIVE_INFO = 3 * 4
@@ -184,17 +195,19 @@
       </form>
       <pre>
 Help:
-s: seconds
-m: minutes
-h: hours
-d: days
-y: years</pre>
+Takes abbreviations of the following
+seconds
+minutes
+hours
+days
+months
+years</pre>
     </br>
       <p id="result"></p>
     </div>
 
     <footer class="footer">
-      <p>By m30m, a simple UI for the <a href="https://gist.github.com/jjmaestro/5774063" target="_blank"> python code</a></p>
+      <p>modified by Zen-Slug from <a href="https://github.com/m30m/whisper-calculator" target="_blank">m30m</a></p>
     </footer>
 
   </div> <!-- /container -->
