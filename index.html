@@ -116,11 +116,11 @@
       function getUnitString(s){
         timeVals = ['seconds', 'minutes', 'hours', 'days', 'weeks', 'years'];
         for (value in timeVals) {
-          if (value.startsWith(s)) {
-            return value;
+          if (timeVals[value].startsWith(s)) {
+            return timeVals[value];
           }
-        throw s " does not match one of " + timeVals ;
         }
+        throw s + " does not match one of " + timeVals ;
       }
       function to_seconds(s){
         unitMultipliers = {
