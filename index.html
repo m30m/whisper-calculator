@@ -99,10 +99,6 @@
       border-bottom: 0;
     }
   }
-
-  #archive{
-    width:450px;
-  }
   pre{
     margin-top: 10px;
     text-align: left;
@@ -159,8 +155,9 @@
       }
       var number_of_metrics = parseInt(document.getElementById('count').value);
       var number_of_hosts = parseInt(document.getElementById('host').value);
+      var replication_factor = parseInt(document.getElementById('replication-factor').value);
       var units = ['bytes', 'Kilobytes', 'Megabytes', 'Gigabytes', 'Terabytes']
-      var size = bytes_per_metric * number_of_metrics * number_of_hosts;
+      var size = bytes_per_metric * replication_factor *  number_of_metrics * number_of_hosts;
       unit = 0;
       while(unit<4 && size>1024)
       {
@@ -177,13 +174,11 @@
 
     <div class="jumbotron">
       <h2>Insert your archive plan in resolution:retention format</h2>
-      <form class="form-inline">
+      <form class="form">
         <div class="form-group">
           <label for="archive">Format</label>
           <input type="text" class="form-control" id="archive" placeholder="15s:7d,1m:21d,15m:5y" oninput="calculate()">
         </div>
-        <br/>
-        <br/>
         <div class="form-group">
           <label for="count">Metric count</label>
           <input type="number" class="form-control" id="count" value="1" min="1" step="1" oninput="calculate()">
@@ -191,6 +186,10 @@
         <div class="form-group">
           <label for="hosts">Hosts count</label>
           <input type="number" class="form-control" id="host" value="1" min="1" step="1" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label for="hosts">Replication Factor</label>
+          <input type="number" class="form-control" id="replication-factor" value="1" min="1" step="1" oninput="calculate()">
         </div>
       </form>
       <pre>
